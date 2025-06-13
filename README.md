@@ -26,9 +26,10 @@ REM Open PowerShell with execution policy bypass in the process scope
 start powershell -NoExit -Command "& Set-ExecutionPolicy Bypass -Scope Process;"
 ```
 
-3. add the following config in your maven setting.xml to use local maven repository instead of pulling from internet
+2. add the following config in your maven setting.xml to use local maven repository instead of pulling from internet
    ><localRepository>C:\sonata.os\opt\maven_local_repo</localRepository>
-4. compile with maven
+   
+3. compile with maven
    >mvn install -X
 
 
