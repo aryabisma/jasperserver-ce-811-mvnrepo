@@ -1,113 +1,924 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="importmap-type" content="systemjs-importmap"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#f5f5f2">
-    <link rel="shortcut icon" href="./favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/ui/webapp/css/vendorStyles.css">
-    <link rel="stylesheet" type="text/css" href="/ui/webapp/css/application.css">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.jaspersoft.jasperserver.crypto</groupId>
+    <artifactId>js-crypto</artifactId>
+    <packaging>jar</packaging>
+    <version>3.1.2</version>
+    <name>JasperReports Server Keystore and Encryption properties</name>
+    <description>(This Source Code is Internal Only)</description>
+    <url>http://www.jaspersoft.com</url>
 
-    <!--  This section will be evaluated by the server in runtime  -->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <delombok.skip>false</delombok.skip>
+                <proguard.skip>false</proguard.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>delombok</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${delombok.skip}</skip>
+                                    <!--                                    <addOutputDirectory>${delombok.skip}</addOutputDirectory>-->
+                                    <!--                            <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>-->
+                                    <!--                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>-->
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>src/main/lombok</exclude>
+                            </excludes>
+                            <release>8</release>
+                            <!--                    <showDeprecation>true</showDeprecation>-->
+                            <showWarnings>true</showWarnings>
+                            <!--                    <optimize>false</optimize>-->
+                            <verbose>true</verbose>
+                            <fork>true</fork>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>${checkerFrameworkVersion}</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <annotationProcessors>
+                                <!-- Add all the checkers you want to enable here -->
+                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker
+                                </annotationProcessor>
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <!--
+                                  For the Subtyping Checker, annotations defined in module 'your-qual-artifact':
+                                  <arg>-Aquals=myPackage.qual.MyFenum,myPackage.qual.MyCustomType</arg>
+                                -->
+                                <!--                                <arg>-AprintErrorStack</arg>-->
+                                <!-- If using JDK 11 remove the two arguments above and uncomment the one below. -->
+                                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                                <!-- -Awarns turns type-checking errors into warnings. -->
+                                <!-- <arg>-Awarns</arg>-->
+                                <arg>-Alint</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>enforce-banned-dependencies</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <bannedDependencies>
+                                            <excludes>
+                                                <exclude>org.projectlombok:lombok:*:jar:compile</exclude>
+                                                <exclude>org.checkerframework:checker:*:jar:compile</exclude>
+                                            </excludes>
+                                            <message>Lombok and Checker should be required when using this package.
+                                            </message>
+                                        </bannedDependencies>
+                                    </rules>
+                                    <fail>true</fail>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <tasks>
+                                        <delete>
+                                            <fileset dir="${project.build.directory}/generated-sources/delombok" includes="**/*.java" />
+                                        </delete>
+                                    </tasks>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>ide</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <delombok.skip>true</delombok.skip>
+                <proguard.skip>true</proguard.skip>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/main/lombok</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>src/main/lombok</exclude>
+                            </excludes>
+                            <release>8</release>
+                            <showWarnings>true</showWarnings>
+                            <verbose>true</verbose>
+                            <annotationProcessorPaths>
+                                <path>
+                                    <groupId>org.projectlombok</groupId>
+                                    <artifactId>lombok</artifactId>
+                                    <version>${lombok.version}</version>
+                                </path>
+                                <path>
+                                    <groupId>org.checkerframework</groupId>
+                                    <artifactId>checker</artifactId>
+                                    <version>${checkerFrameworkVersion}</version>
+                                </path>
+                            </annotationProcessorPaths>
+                            <annotationProcessors>
+                                <!-- Add all the checkers you want to enable here -->
+                                <annotationProcessor>lombok.launch.AnnotationProcessorHider$AnnotationProcessor
+                                </annotationProcessor>
+                                <annotationProcessor>lombok.launch.AnnotationProcessorHider$ClaimingProcessor
+                                </annotationProcessor>
+                                <annotationProcessor>org.checkerframework.checker.nullness.NullnessChecker
+                                </annotationProcessor>
+                            </annotationProcessors>
+                            <compilerArgs>
+                                <!--
+                                  For the Subtyping Checker, annotations defined in module 'your-qual-artifact':
+                                  <arg>-Aquals=myPackage.qual.MyFenum,myPackage.qual.MyCustomType</arg>
+                                -->
+                                <!-- <arg>-AprintErrorStack</arg>-->
+                                <!-- If using JDK 11 remove the two arguments above and uncomment the one below. -->
+                                <arg>-J--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+                                <!-- -Awarns turns type-checking errors into warnings. -->
+                                <!-- <arg>-Awarns</arg>-->
+                                <arg>-Alint</arg>
+                            </compilerArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <lombok.encoding>UTF-8</lombok.encoding>
+        <skipSurefire>false</skipSurefire>
+
+        <lombok.version>1.18.12</lombok.version>
+        <proguard.version>6.1.1</proguard.version>
+
+        <checkerFrameworkVersion><!-- checker-framework-version -->
+            3.2.0<!-- /checker-framework-version --></checkerFrameworkVersion>
+
+        <bcprov.version>1.68</bcprov.version> <!-- review proguard-maven-plugin configuration before review -->
+        <ant.version>1.9.4</ant.version>
+        <commons.configuration.version>2.7</commons.configuration.version>
+        <commons.beanutils.version>1.9.4</commons.beanutils.version>
+        <commons.io.version>2.6</commons.io.version>
+        <commons.text.version>1.8</commons.text.version>
+        <commons.codec.version>1.10</commons.codec.version>
+        <commons.dbcp.version>1.4</commons.dbcp.version>
+        <tomcat.dbcp.version>7.0.42</tomcat.dbcp.version>
+        <tomcat.version>7.0.42</tomcat.version>
+        <failsafe.version>2.3.4</failsafe.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jaxb-runtime.version>2.3.2</jaxb-runtime.version>
+        <xerces.version>2.12.1-sp1</xerces.version>
+        <semver4j.version>3.1.0</semver4j.version>
+        <log4j.version>2.13.3</log4j.version>
+        <junit.jupiter.version>5.5.1</junit.jupiter.version>
+        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.surefire.version>3.0.0-M3</maven.surefire.version>
+        <maven.failsafe.version>3.0.0-M3</maven.failsafe.version>
+        <maven.jar.version>3.1.2</maven.jar.version>
+        <maven.help.version>3.2.0</maven.help.version>
+        <maven.helper.version>3.1.0</maven.helper.version>
+        <maven.enforcer.version>3.0.0-M3</maven.enforcer.version>
+        <maven.proguard.version>2.2.0</maven.proguard.version>
+        <maven.lombok.version>1.18.12.0</maven.lombok.version>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>META-INF/MANIFEST.MF</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>META-INF/MANIFEST.MF</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <!-- This plugin will set properties values using dependency information -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>${skipSurefire}</skip>
+                    <excludes>
+                        <exclude>**/*IntegrationTest</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <TEST__USER__HOME>${project.build.directory}/test-classes/home</TEST__USER__HOME>
+                                <DEPRECATED_IMPORT_EXPORT_ENC_SECRET__KEYALIAS>deprecatedImportExportEncSecret</DEPRECATED_IMPORT_EXPORT_ENC_SECRET__KEYALIAS>
+                                <DATABASE_URL>http://schubar%40tibco.com@localhost:5432/jasperserver_21253
+                                </DATABASE_URL>
+                            </environmentVariables>
+                            <systemProperties>
+                                <property>
+                                    <name>user.home</name>
+                                    <value>${project.build.directory}/test-classes/home</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>env-var-ksp</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <environmentVariables>
+                                <ksp>${project.build.directory}/test-classes/home</ksp>
+                                <TEST__USER__HOME>${project.build.directory}/test-classes/user_home</TEST__USER__HOME>
+                                <DEPRECATED_IMPORT_EXPORT_ENC_SECRET__KEYALIAS>deprecatedImportExportEncSecret
+                                </DEPRECATED_IMPORT_EXPORT_ENC_SECRET__KEYALIAS>
+                                <DATABASE_URL>http://schubar%40tibco.com@localhost:5432/jasperserver_21253
+                                </DATABASE_URL>
+                            </environmentVariables>
+                            <systemProperties>
+                                <property>
+                                    <name>user.home</name>
+                                    <value>${project.build.directory}/test-classes/user_home</value>
+                                </property>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.wvengen</groupId>
+                <artifactId>proguard-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>proguard</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <proguardVersion>${proguard.version}</proguardVersion>
+                    <obfuscate>true</obfuscate>
+                    <skip>${proguard.skip}</skip>
+                    <injar>${project.build.finalName}.jar</injar>
+                    <outjar>${project.build.finalName}.jar</outjar>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                    <proguardInclude>${basedir}/src/main/resources/proguard.conf</proguardInclude>
+                    <!-- Current version of the proguard doesn't support java 9 very well (warns about `META-INF/versions/9`) -->
+                    <!-- Because plugin doesn't support filters adding manually lib dependencies with filter -->
+                    <options>
+                        <!-- because of the warning these libs where defined manually using `-libraryjars` option -->
+                        <option>-libraryjars
+                            ${settings.localRepository}/org/bouncycastle/bcprov-jdk15on/${bcprov.version}/bcprov-jdk15on-${bcprov.version}.jar(!META-INF/versions/**)
+                        </option>
+                        <option>-libraryjars
+                            ${settings.localRepository}/org/bouncycastle/bcpkix-jdk15on/${bcprov.version}/bcpkix-jdk15on-${bcprov.version}.jar(!META-INF/versions/**)
+                        </option>
+                        <option>-libraryjars
+                            ${settings.localRepository}/org/apache/logging/log4j/log4j-api/${log4j.version}/log4j-api-${log4j.version}.jar(!META-INF/versions/9/**)
+                        </option>
+                        <option>-libraryjars
+                            ${settings.localRepository}/org/apache/logging/log4j/log4j-1.2-api/${log4j.version}/log4j-1.2-api-${log4j.version}.jar(!META-INF/versions/9/**)
+                        </option>
+                        <option>-libraryjars
+                            ${settings.localRepository}/org/apache/logging/log4j/log4j-core/${log4j.version}/log4j-core-${log4j.version}.jar(!META-INF/versions/9/**)
+                        </option>
+                    </options>
+                    <exclusions>
+                        <exclusion>
+                            <!-- Exclude here because added manually in the options (-libraryjars) to enable filter -->
+                            <groupId>org.bouncycastle</groupId>
+                            <artifactId>bcprov-jdk15on</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <!-- Exclude here because added manually in the options (-libraryjars) to enable filter -->
+                            <groupId>org.bouncycastle</groupId>
+                            <artifactId>bcpkix-jdk15on</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <!-- Exclude here because added manually in the options (-libraryjars) to enable filter -->
+                            <groupId>org.apache.logging.log4j</groupId>
+                            <artifactId>log4j-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <!-- Exclude here because added manually in the options (-libraryjars) to enable filter -->
+                            <groupId>org.apache.logging.log4j</groupId>
+                            <artifactId>log4j-1.2-api</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <!-- Exclude here because added manually in the options (-libraryjars) to enable filter -->
+                            <groupId>org.apache.logging.log4j</groupId>
+                            <artifactId>log4j-core</artifactId>
+                        </exclusion>
+                        <exclusion>
+                            <groupId>org.checkerframework</groupId>
+                            <artifactId>checker</artifactId>
+                        </exclusion>
+                    </exclusions>
+                    <libs>
+                        <lib>${java.home}/lib/jrt-fs.jar</lib>
+                        <lib>${java.home}/jmods/java.base.jmod</lib>
+                        <lib>${java.home}/jmods/java.compiler.jmod</lib>
+                        <lib>${java.home}/jmods/java.datatransfer.jmod</lib>
+                        <lib>${java.home}/jmods/java.desktop.jmod</lib>
+                        <lib>${java.home}/jmods/java.instrument.jmod</lib>
+                        <lib>${java.home}/jmods/java.logging.jmod</lib>
+                        <lib>${java.home}/jmods/java.management.jmod</lib>
+                        <lib>${java.home}/jmods/java.management.rmi.jmod</lib>
+                        <lib>${java.home}/jmods/java.naming.jmod</lib>
+                        <lib>${java.home}/jmods/java.net.http.jmod</lib>
+                        <lib>${java.home}/jmods/java.prefs.jmod</lib>
+                        <lib>${java.home}/jmods/java.rmi.jmod</lib>
+                        <lib>${java.home}/jmods/java.scripting.jmod</lib>
+                        <lib>${java.home}/jmods/java.se.jmod</lib>
+                        <lib>${java.home}/jmods/java.security.jgss.jmod</lib>
+                        <lib>${java.home}/jmods/java.security.sasl.jmod</lib>
+                        <lib>${java.home}/jmods/java.smartcardio.jmod</lib>
+                        <lib>${java.home}/jmods/java.sql.jmod</lib>
+                        <lib>${java.home}/jmods/java.sql.rowset.jmod</lib>
+                        <lib>${java.home}/jmods/java.xml.crypto.jmod</lib>
+                        <lib>${java.home}/jmods/java.xml.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.accessibility.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.aot.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.attach.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.charsets.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.compiler.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.crypto.cryptoki.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.crypto.ec.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.dynalink.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.editpad.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.hotspot.agent.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.httpserver.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.ed.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.jvmstat.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.le.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.opt.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.vm.ci.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.vm.compiler.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.internal.vm.compiler.management.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jartool.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.javadoc.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jcmd.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jconsole.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jdeps.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jdi.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jdwp.agent.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jfr.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jlink.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jshell.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jsobject.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.jstatd.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.localedata.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.management.agent.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.management.jfr.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.management.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.naming.dns.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.naming.rmi.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.net.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.pack.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.rmic.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.scripting.nashorn.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.scripting.nashorn.shell.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.sctp.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.security.auth.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.security.jgss.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.unsupported.desktop.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.unsupported.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.xml.dom.jmod</lib>
+                        <lib>${java.home}/jmods/jdk.zipfs.jmod</lib>
+                    </libs>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.proguard</groupId>
+                        <artifactId>proguard-base</artifactId>
+                        <version>${proguard.version}</version>
+                        <scope>runtime</scope>
+                        <optional>true</optional>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <test.ksVersion>${project.version}</test.ksVersion>
+                        <ksp>${project.build.directory}/test-classes/home</ksp>
+                    </environmentVariables>
+                    <!-- Excluding target/classes to test the jar-->
+                    <classesDirectory>target/maven-archiver</classesDirectory>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>
+                            ${project.build.directory}/${project.build.finalName}.${project.packaging}
+                        </additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <includes>
+                        <include>**/*IntegrationTest</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven.compiler.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>${maven.jar.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-help-plugin</artifactId>
+                    <version>${maven.help.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven.surefire.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-failsafe-plugin</artifactId>
+                    <version>${maven.failsafe.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.wvengen</groupId>
+                    <artifactId>proguard-maven-plugin</artifactId>
+                    <version>${maven.proguard.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok-maven-plugin</artifactId>
+                    <version>${maven.lombok.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${maven.helper.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven.enforcer.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jxr-plugin</artifactId>
+                    <version>3.0.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.spotbugs</groupId>
+                    <artifactId>spotbugs-maven-plugin</artifactId>
+                    <version>4.0.0-SNAPSHOT</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <configuration>
+                    <findbugsXmlOutput>true</findbugsXmlOutput>
+                    <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+                    <includeTests>true</includeTests>
+                    <xmlOutput>true</xmlOutput>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-configuration2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-dbcp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker</artifactId>
+        </dependency>
+        <!-- If using JDK 8 -->
+        <!--        <dependency>-->
+        <!--            <groupId>org.checkerframework</groupId>-->
+        <!--            <artifactId>jdk8</artifactId>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
+        <!-- If using JDK 8 -->
+        <!--        <dependency>-->
+        <!--            <groupId>com.google.errorprone</groupId>-->
+        <!--            <artifactId>javac</artifactId>-->
+        <!--            <scope>compile</scope>-->
+        <!--        </dependency>-->
+        <dependency>
+            <groupId>net.jodah</groupId>
+            <artifactId>failsafe</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vdurmont</groupId>
+            <artifactId>semver4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>jakarta.activation</groupId>-->
+        <!--            <artifactId>jakarta.activation-api</artifactId>-->
+        <!--            <scope>test</scope>-->
+        <!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.codelibs.xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-catalina</artifactId>
+        </dependency>
+    </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.jupiter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${bcprov.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcpkix-jdk15on</artifactId>
+                <version>${bcprov.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>${ant.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-configuration2</artifactId>
+                <version>${commons.configuration.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+            <dependency>
+                <groupId>commons-beanutils</groupId>
+                <artifactId>commons-beanutils</artifactId>
+                <version>${commons.beanutils.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>${commons.text.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons.io.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${commons.codec.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>${commons.dbcp.version}</version>
+                <scope>provided</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>xml-apis</groupId>
+                        <artifactId>xml-apis</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>xerces</groupId>
+                        <artifactId>xerces</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-dbcp</artifactId>
+                <version>${tomcat.dbcp.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-api</artifactId>
+                <version>${log4j.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>${log4j.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-1.2-api</artifactId>
+                <version>${log4j.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker-qual</artifactId>
+                <version>${checkerFrameworkVersion}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.checkerframework</groupId>
+                <artifactId>checker</artifactId>
+                <version>${checkerFrameworkVersion}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- If using JDK 8 -->
+            <!--            <dependency>-->
+            <!--                <groupId>org.checkerframework</groupId>-->
+            <!--                <artifactId>jdk8</artifactId>-->
+            <!--                <version>${checkerframework.version}</version>-->
+            <!--            </dependency>-->
+            <!-- If using JDK 8 -->
+            <!--            <dependency>-->
+            <!--                <groupId>com.google.errorprone</groupId>-->
+            <!--                <artifactId>javac</artifactId>-->
+            <!--                <version>${errorprone.version}</version>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>net.jodah</groupId>
+                <artifactId>failsafe</artifactId>
+                <version>${failsafe.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.xml.bind</groupId>
+                <artifactId>jakarta.xml.bind-api</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>${jaxb-runtime.version}</version>
+            </dependency>
+            <!--            <dependency>-->
+            <!--                <groupId>jakarta.activation</groupId>-->
+            <!--                <artifactId>jakarta.activation-api</artifactId>-->
+            <!--                <version>1.2.1</version>-->
+            <!--            </dependency>-->
+            <dependency>
+                <groupId>org.codelibs.xerces</groupId>
+                <artifactId>xercesImpl</artifactId>
+                <version>${xerces.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.2.5</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-catalina</artifactId>
+                <version>${tomcat.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.vdurmont</groupId>
+                <artifactId>semver4j</artifactId>
+                <version>${semver4j.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     
 
-    <script type="systemjs-importmap">
-        {"imports":{"@jfrog/ui-platform-microfrontend-artifactory":"/ui/api/v1/ui/webapp/js/app.umd.js?v=7.115.2","@jfrog/ui-platform-microfrontend-artifactory-manifest":"/ui/api/v1/ui/webapp/js/manifest.umd.js?v=7.115.2","@jfrog/ui-platform-microfrontend-distribution":"/ui/api/v1/distribution/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-distribution-manifest":"/ui/api/v1/distribution/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-mc":"/ui/api/v1/mc/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-mc-manifest":"/ui/api/v1/mc/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-insight":"/ui/api/v1/insight/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-insight-manifest":"/ui/api/v1/insight/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-catalog":"/ui/api/v1/catalog/webapp/js/app.umd.js?v=1.20.3","@jfrog/ui-platform-microfrontend-catalog-manifest":"/ui/api/v1/catalog/webapp/js/manifest.umd.js?v=1.20.3","@jfrog/ui-platform-microfrontend-xray":"/ui/api/v1/xray/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-xray-manifest":"/ui/api/v1/xray/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-runtime":"/ui/api/v1/runtime/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-runtime-manifest":"/ui/api/v1/runtime/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-event":"/ui/api/v1/event/webapp/js/app.umd.js?v=7.178.0","@jfrog/ui-platform-microfrontend-event-manifest":"/ui/api/v1/event/webapp/js/manifest.umd.js?v=7.178.0","@jfrog/ui-platform-microfrontend-access":"/ui/api/v1/access/webapp/js/app.umd.js?v=7.144.0","@jfrog/ui-platform-microfrontend-access-manifest":"/ui/api/v1/access/webapp/js/manifest.umd.js?v=7.144.0","@jfrog/ui-platform-microfrontend-pipelines":"/ui/api/v1/pipe/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-pipelines-manifest":"/ui/api/v1/pipe/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-worker":"/ui/api/v1/worker/webapp/js/app.umd.js?v=1.142.0","@jfrog/ui-platform-microfrontend-worker-manifest":"/ui/api/v1/worker/webapp/js/manifest.umd.js?v=1.142.0","@jfrog/ui-platform-microfrontend-xsc":"/ui/api/v1/xsc/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-xsc-manifest":"/ui/api/v1/xsc/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-apptrust":"/ui/api/v1/apptrust/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-apptrust-manifest":"/ui/api/v1/apptrust/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-unifiedpolicy":"/ui/api/v1/unifiedpolicy/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-unifiedpolicy-manifest":"/ui/api/v1/unifiedpolicy/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-ml":"/ui/api/v1/ml/frontend-mfe-server/static/main.js?v=1.0.70","@jfrog/ui-platform-microfrontend-ml-manifest":"/ui/api/v1/ml/frontend-mfe-server/static/manifest.js?v=1.0.70","vue":"/ui/externals/vue/dist/vue.min.js","vue-router":"/ui/externals/vue-router/dist/vue-router.min.js","jfrog-ui-essentials":"/ui/externals/jfrog-ui-essentials/dist/jfrog-ui-essentials.umd.min.js","single-spa":"/ui/externals/single-spa/lib/umd/single-spa.min.js"}}
-    </script>
-
-    <script type="importmap" nonce="IU7IEIN5xkqUGbCuWLlhRQ=="> {"imports":{"@jfrog/mfe-artifactory-app-esm":"/ui/api/v1/ui/webapp/rtui/js/app.esm.js?v=7.115.2","@jfrog/mfe-artifactory-manifest-esm":"/ui/api/v1/ui/webapp/rtui/js/manifest.ems.js?v=7.115.2","@jfrog/mfe-frontend-app-esm":"/ui/client-mfe/app-frontend.js?v=1.211.1","@jfrog/mfe-frontend-manifest-esm":"?v=1.211.1","@jfrog/mfe-onemodel-app-esm":"/ui/api/v1/onemodel/webapp/app.js?v=1.48.0","@jfrog/mfe-onemodel-manifest-esm":"/ui/api/v1/onemodel/webapp/manifest.js?v=1.48.0","@jfrog/mfe-platform_federation-app-esm":"/ui/api/v1/platform-federation/webapp/js/app.esm.js","@jfrog/mfe-platform_federation-manifest-esm":"/ui/api/v1/platform-federation/webapp/js/manifest.esm.js"}}</script>
-    <!--  This section will be rendered by the server in runtime  -->
-
-    <script src="/ui/externals/systemjs/dist/system.min.js"></script>
-    <script src="/ui/externals/systemjs/dist/extras/amd.min.js"></script>
-    <script src="/ui/externals/systemjs/dist/extras/named-exports.min.js"></script>
-
-    <link rel="preload" href="/ui/externals/vue/dist/vue.min.js" as="script">
-    <link rel="preload" href="/ui/externals/vue-router/dist/vue-router.min.js" as="script">
-    <link rel="preload" href="/ui/externals/jfrog-ui-essentials/dist/jfrog-ui-essentials.umd.min.js" as="script">
-    <link rel="preload" href="/ui/externals/single-spa/lib/umd/single-spa.min.js" as="script">
-
-
-    <base href="/ui/">
-    <title>JFrog</title>
-    <style>
-        @keyframes heartbeatOut {
-            from {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0;
-                transform: scale(.8);
-            }
-            to {
-                opacity: 0;
-                transform: scale(.8);
-            }
-        }
-
-        @keyframes heartbeat {
-            from {
-                transform: scale3d(1, 1, 1);
-            }
-
-            50% {
-                transform: scale3d(1.15, 1.15, 1.15);
-            }
-
-            to {
-                transform: scale3d(1, 1, 1);
-            }
-        }
-
-        .pounding-heart-container {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 9999999999;
-            background: linear-gradient(132.49deg, #414857 14.17%, #252831 83.36%);
-        }
-
-        .pounding-heart-container.show-splash {
-            display: flex;
-        }
-
-        .logo {
-            width: 130px;
-            -webkit-backface-visibility: hidden;
-            -ms-transform: translateZ(0); /* IE 9 */
-            -webkit-transform: translateZ(0); /* Chrome, Safari, Opera */
-            transform: translateZ(0);
-        }
-
-        .logo.pulse {
-            animation: heartbeat 1.7s infinite;
-        }
-
-        .logo.zoom-out {
-            animation: heartbeatOut 150ms forwards;
-        }
-
-    </style>
-<link href="/ui/css/chunk-vendors.fffe0091.css" rel="stylesheet"><link href="/ui/css/app.19be3841.css" rel="stylesheet"></head>
-<body>
-<div class="pounding-heart-container show-splash">
-    <img class="logo pulse" src="./jfrog.svg">
-</div>
-<noscript>
-    <strong>We're sorry but jfrog webapp doesn't work properly without JavaScript enabled. Please enable it to
-        continue.</strong>
-</noscript>
-<div id="app"></div>
-<!-- built files will be auto injected -->
-<script type="text/javascript" src="/ui/js/chunk-vendors.4f327180.js"></script><script type="text/javascript" src="/ui/js/app.c6bb3642.js"></script><script type="text/javascript" src="/ui/js/preloader.b7736ed7.js"></script></body>
-</html>
+    
+</project>

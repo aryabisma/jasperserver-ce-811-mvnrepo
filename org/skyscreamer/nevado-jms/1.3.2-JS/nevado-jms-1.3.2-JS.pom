@@ -1,113 +1,218 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta name="importmap-type" content="systemjs-importmap"/>
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#f5f5f2">
-    <link rel="shortcut icon" href="./favicon.ico">
-    <link rel="stylesheet" type="text/css" href="/ui/webapp/css/vendorStyles.css">
-    <link rel="stylesheet" type="text/css" href="/ui/webapp/css/application.css">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-    <!--  This section will be evaluated by the server in runtime  -->
-    
+    <parent>
+        <groupId>org.skyscreamer</groupId>
+        <artifactId>nevado</artifactId>
+        <version>1.3.2-JS</version>
+    </parent>
 
-    <script type="systemjs-importmap">
-        {"imports":{"@jfrog/ui-platform-microfrontend-artifactory":"/ui/api/v1/ui/webapp/js/app.umd.js?v=7.115.2","@jfrog/ui-platform-microfrontend-artifactory-manifest":"/ui/api/v1/ui/webapp/js/manifest.umd.js?v=7.115.2","@jfrog/ui-platform-microfrontend-distribution":"/ui/api/v1/distribution/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-distribution-manifest":"/ui/api/v1/distribution/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-mc":"/ui/api/v1/mc/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-mc-manifest":"/ui/api/v1/mc/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-insight":"/ui/api/v1/insight/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-insight-manifest":"/ui/api/v1/insight/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-catalog":"/ui/api/v1/catalog/webapp/js/app.umd.js?v=1.20.3","@jfrog/ui-platform-microfrontend-catalog-manifest":"/ui/api/v1/catalog/webapp/js/manifest.umd.js?v=1.20.3","@jfrog/ui-platform-microfrontend-xray":"/ui/api/v1/xray/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-xray-manifest":"/ui/api/v1/xray/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-runtime":"/ui/api/v1/runtime/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-runtime-manifest":"/ui/api/v1/runtime/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-event":"/ui/api/v1/event/webapp/js/app.umd.js?v=7.178.0","@jfrog/ui-platform-microfrontend-event-manifest":"/ui/api/v1/event/webapp/js/manifest.umd.js?v=7.178.0","@jfrog/ui-platform-microfrontend-access":"/ui/api/v1/access/webapp/js/app.umd.js?v=7.144.0","@jfrog/ui-platform-microfrontend-access-manifest":"/ui/api/v1/access/webapp/js/manifest.umd.js?v=7.144.0","@jfrog/ui-platform-microfrontend-pipelines":"/ui/api/v1/pipe/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-pipelines-manifest":"/ui/api/v1/pipe/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-worker":"/ui/api/v1/worker/webapp/js/app.umd.js?v=1.142.0","@jfrog/ui-platform-microfrontend-worker-manifest":"/ui/api/v1/worker/webapp/js/manifest.umd.js?v=1.142.0","@jfrog/ui-platform-microfrontend-xsc":"/ui/api/v1/xsc/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-xsc-manifest":"/ui/api/v1/xsc/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-apptrust":"/ui/api/v1/apptrust/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-apptrust-manifest":"/ui/api/v1/apptrust/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-unifiedpolicy":"/ui/api/v1/unifiedpolicy/webapp/js/app.umd.js","@jfrog/ui-platform-microfrontend-unifiedpolicy-manifest":"/ui/api/v1/unifiedpolicy/webapp/js/manifest.umd.js","@jfrog/ui-platform-microfrontend-ml":"/ui/api/v1/ml/frontend-mfe-server/static/main.js?v=1.0.70","@jfrog/ui-platform-microfrontend-ml-manifest":"/ui/api/v1/ml/frontend-mfe-server/static/manifest.js?v=1.0.70","vue":"/ui/externals/vue/dist/vue.min.js","vue-router":"/ui/externals/vue-router/dist/vue-router.min.js","jfrog-ui-essentials":"/ui/externals/jfrog-ui-essentials/dist/jfrog-ui-essentials.umd.min.js","single-spa":"/ui/externals/single-spa/lib/umd/single-spa.min.js"}}
-    </script>
+    <groupId>org.skyscreamer</groupId>
+    <artifactId>nevado-jms</artifactId>
+    <version>1.3.2-JS</version>
+    <packaging>jar</packaging>
 
-    <script type="importmap" nonce="aML1xHNVHw6wlBafLLpMYw=="> {"imports":{"@jfrog/mfe-artifactory-app-esm":"/ui/api/v1/ui/webapp/rtui/js/app.esm.js?v=7.115.2","@jfrog/mfe-artifactory-manifest-esm":"/ui/api/v1/ui/webapp/rtui/js/manifest.ems.js?v=7.115.2","@jfrog/mfe-frontend-app-esm":"/ui/client-mfe/app-frontend.js?v=1.211.1","@jfrog/mfe-frontend-manifest-esm":"?v=1.211.1","@jfrog/mfe-onemodel-app-esm":"/ui/api/v1/onemodel/webapp/app.js?v=1.48.0","@jfrog/mfe-onemodel-manifest-esm":"/ui/api/v1/onemodel/webapp/manifest.js?v=1.48.0","@jfrog/mfe-platform_federation-app-esm":"/ui/api/v1/platform-federation/webapp/js/app.esm.js","@jfrog/mfe-platform_federation-manifest-esm":"/ui/api/v1/platform-federation/webapp/js/manifest.esm.js"}}</script>
-    <!--  This section will be rendered by the server in runtime  -->
+    <name>Nevado JMS</name>
+    <description>JMS Provider for Amazon's cloud services (uses SQS/SNS)</description>
+    <url>https://github.com/skyscreamer/nevado</url>
 
-    <script src="/ui/externals/systemjs/dist/system.min.js"></script>
-    <script src="/ui/externals/systemjs/dist/extras/amd.min.js"></script>
-    <script src="/ui/externals/systemjs/dist/extras/named-exports.min.js"></script>
+    <dependencies>
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.8</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.12</version>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.2</version>
+        </dependency>
 
-    <link rel="preload" href="/ui/externals/vue/dist/vue.min.js" as="script">
-    <link rel="preload" href="/ui/externals/vue-router/dist/vue-router.min.js" as="script">
-    <link rel="preload" href="/ui/externals/jfrog-ui-essentials/dist/jfrog-ui-essentials.umd.min.js" as="script">
-    <link rel="preload" href="/ui/externals/single-spa/lib/umd/single-spa.min.js" as="script">
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk</artifactId>
+            <version>1.6.12</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-jms</artifactId>
+            <version>2.0.0.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>activemq</groupId>
+            <artifactId>activemq</artifactId>
+            <version>3.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.messaging.mq</groupId>
+            <artifactId>fscontext</artifactId>
+            <version>4.4</version>
+            <scope>test</scope>
+        </dependency>
 
-    <base href="/ui/">
-    <title>JFrog</title>
-    <style>
-        @keyframes heartbeatOut {
-            from {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0;
-                transform: scale(.8);
-            }
-            to {
-                opacity: 0;
-                transform: scale(.8);
-            }
-        }
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-        @keyframes heartbeat {
-            from {
-                transform: scale3d(1, 1, 1);
-            }
+    <properties>
+        <spring.version>3.0.5.RELEASE</spring.version>
+    </properties>
 
-            50% {
-                transform: scale3d(1.15, 1.15, 1.15);
-            }
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.11</version>
+                <configuration>
+                    <parallel>classes</parallel>
+                    <threadCount>5</threadCount>
+                    <excludes>
+                        <exclude>**/TestMessageListener.java</exclude>
+                        <exclude>**/TestMessageListenerRuntimeException.java</exclude>
+                        <exclude>**/TestBrokenMessage.java</exclude>
+                        <exclude>**/TestExceptionListener.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-            to {
-                transform: scale3d(1, 1, 1);
-            }
-        }
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
-        .pounding-heart-container {
-            display: none;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            z-index: 9999999999;
-            background: linear-gradient(132.49deg, #414857 14.17%, #252831 83.36%);
-        }
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
-        .pounding-heart-container.show-splash {
-            display: flex;
-        }
-
-        .logo {
-            width: 130px;
-            -webkit-backface-visibility: hidden;
-            -ms-transform: translateZ(0); /* IE 9 */
-            -webkit-transform: translateZ(0); /* Chrome, Safari, Opera */
-            transform: translateZ(0);
-        }
-
-        .logo.pulse {
-            animation: heartbeat 1.7s infinite;
-        }
-
-        .logo.zoom-out {
-            animation: heartbeatOut 150ms forwards;
-        }
-
-    </style>
-<link href="/ui/css/chunk-vendors.fffe0091.css" rel="stylesheet"><link href="/ui/css/app.19be3841.css" rel="stylesheet"></head>
-<body>
-<div class="pounding-heart-container show-splash">
-    <img class="logo pulse" src="./jfrog.svg">
-</div>
-<noscript>
-    <strong>We're sorry but jfrog webapp doesn't work properly without JavaScript enabled. Please enable it to
-        continue.</strong>
-</noscript>
-<div id="app"></div>
-<!-- built files will be auto injected -->
-<script type="text/javascript" src="/ui/js/chunk-vendors.4f327180.js"></script><script type="text/javascript" src="/ui/js/app.c6bb3642.js"></script><script type="text/javascript" src="/ui/js/preloader.b7736ed7.js"></script></body>
-</html>
+    <repositories>
+        <repository>
+            <id>repository.jboss.org-public</id>
+            <name>JBoss repository</name>
+            <url>https://repository.jboss.org/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>joda</id>
+            <name>joda repo</name>
+            <url>http://oss.sonatype.org/content/repositories/joda-releases/</url>
+        </repository>
+    </repositories>
+</project>
