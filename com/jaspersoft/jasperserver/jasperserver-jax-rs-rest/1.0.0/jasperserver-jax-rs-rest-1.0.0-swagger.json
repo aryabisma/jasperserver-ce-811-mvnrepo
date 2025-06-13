@@ -1,0 +1,13 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "JasperServer JAX-RS services",
+    "description" : "The JasperReports Server REST API is an Application Programming Interface that follows the guidelines of REpresentational State Transfer design to allow client application to interact with the server through the HTTP protocol. With a few exceptions, the REST API allows clients to interact with all features of the server, such as running, exporting, and scheduling reports, reading and writing resources in the repository, and managing organizations, roles, and users. The REST API requires credentials for every operation and enforces the same permissions and administrator restrictions as the server's user interface.\n\nClient applications send requests to named URLs that are called services. A service provides several operations on a feature, for example the roles service lists the roles in an organization, gives the properties and members of a role, writes new roles, updates existing roles, and deletes roles. This chapter lists all the services of the current REST API. The other chapters of this API Reference each describe one of the services.\n\nIn order to describe resources and objects in the server, the REST API sends and receives data structures called descriptors. Most services support descriptors in both XML (eXtensible Markup Language) and JSON (JavaScript Object Notation). The descriptors are specific to each service, and are defined in the corresponding chapter of this reference. Descriptors are usually sent and received in the body of HTTP requests and responses, so your client application usually relies on further APIs to handle the HTTP communications.",
+    "version" : "1.0.0"
+  },
+  "servers" : [ {
+    "url" : "/jasperserver-pro/rest_v2"
+  }, {
+    "url" : "/jasperserver/rest_v2"
+  } ]
+}

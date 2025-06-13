@@ -1,0 +1,5 @@
+#NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
+#Thu Jun 12 15:13:49 ICT 2025
+jasperserver-war-jar-1.0.0.jar>=
+jasperserver-war-jar-1.0.0.pom>=
+jasperserver-war-jar-1.0.0-tests.jar>=
