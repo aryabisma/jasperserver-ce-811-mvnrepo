@@ -30,6 +30,20 @@
     <version>1.0.0</version>
     <url>http://www.jaspersoft.com</url>
 	<repositories>
+		<repository>
+			<id>local-repo</id>
+			<url>file://C:\sonata.os\opt\maven_local_repo</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+
+	<!--
+	<repositories>
     <repository>
         <id>central</id>
         <url>https://repo.maven.apache.org/maven2</url>
@@ -37,32 +51,30 @@
             <enabled>false</enabled>
         </snapshots>
     </repository>
-
-    <!-- JBoss Repository -->
     <repository>
         <id>jboss</id>
         <url>https://repository.jboss.org/nexus/content/groups/public/</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
-    </repository>
-
-    <!-- Jaspersoft in JFROG Repository -->
+    </repository>	
     <repository>
         <id>jaspersoft-rep01</id>
-        <url>https://jaspersoft.jfrog.io/ui/native/jrs-ce-addons-releases</url>
+        <url>https://jaspersoft.jfrog.io/ui/native/jrs-ce-addons-releases/</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
     </repository>
 	<repository>
         <id>jaspersoft-rep02</id>
-        <url>https://jaspersoft.jfrog.io/ui/native/third-party-ce-artifacts</url>
+        <url>https://jaspersoft.jfrog.io/ui/native/third-party-ce-artifacts/</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
     </repository>
+	
 	</repositories>
+	-->
   <profiles>
     <profile>
       <id>DependencyCheckProfile</id>

@@ -1,7 +1,7 @@
 #NOTE: This is a Maven Resolver internal implementation file, its format can be changed without prior notice.
-#Thu Jun 12 14:56:05 ICT 2025
+#Fri Jun 13 14:14:57 ICT 2025
 https\://jaspersoft.jfrog.io/ui/native/jrs-ce-addons-releases/.lastUpdated=1749714965882
-https\://repo.maven.apache.org/maven2/.lastUpdated=1749714963986
-https\://repository.jboss.org/nexus/content/groups/public/.lastUpdated=1749714964253
+https\://repo.maven.apache.org/maven2/.lastUpdated=1749798896614
+https\://repository.jboss.org/nexus/content/groups/public/.lastUpdated=1749798897380
 https\://repository.jboss.org/nexus/content/groups/public/.error=
 https\://repo.maven.apache.org/maven2/.error=
